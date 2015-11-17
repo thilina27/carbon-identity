@@ -20,6 +20,7 @@ package org.wso2.carbon.identity.application.authenticator.iwa.servlet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.identity.application.authenticator.iwa.IWAAuthenticationGSS;
 import org.wso2.carbon.identity.application.authenticator.iwa.IWAAuthenticator;
 import org.wso2.carbon.identity.application.authenticator.iwa.IWAConstants;
 import org.wso2.carbon.identity.application.authenticator.iwa.IWAServiceDataHolder;
@@ -67,6 +68,21 @@ public class IWAServelet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        log.info("+++++++++++++++++++++got to iwa gss ++++++++++++++++++++");
+        IWAAuthenticationGSS gssauth=new IWAAuthenticationGSS();
+        String auth=gssauth.process(request, response);
+        log.info("+++++++++++++++++++++end iwa gss ++++++++++++++++++++");
+
+
+        if(!auth.isEmpty()) {
+            log.info("========USER============================="+auth+"==============================USER=======");
+        }
+        else{
+            //sendUnauthorized(response,false);
+            log.info("========USER=============================NULL==============================USER=======");
+        }
+
         String commonAuthURL = IdentityUtil.getServerURL(IWAConstants.COMMON_AUTH_EP, true);
         String param = request.getParameter(IWAConstants.IWA_PARAM_STATE);
         if (param == null) {
